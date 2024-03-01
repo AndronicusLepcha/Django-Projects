@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+{%extends 'clinicals/base.html'%}
+{%block body_block%}
+   <h1>Create Patient</h1>
+   <form method="POST">
+    <table>
+    {%csrf_token%}
+    {{form.as_table}}
+    </table>
+    <input type="submit" name="submit" id="createPatient">
+   </form>
+{%endblock%}

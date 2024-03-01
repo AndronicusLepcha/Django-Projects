@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+{%extends 'clinicals/base.html'%}
+{%block body_block%}
+    <h2>clinical data report</h2>
+    <table border="2">
+        <thead>
+            <th>Component Name</th>
+            <th>Component Value</th>
+            <th>Measure Date Time</th>
+        </thead>
+        {% for eachEntry in data %}
+        <tr>
+            <td>{{eachEntry.componentName}}</td>
+            <td>{{eachEntry.componentValue}}</td>
+            <td>{{eachEntry.measureDateTime}}</td>
+        </tr>
+        {%endfor%}
+    </table>
+    <a href="/">Home</a>
+{%endblock%}

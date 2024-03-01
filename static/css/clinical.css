@@ -1,0 +1,14 @@
+body{
+    background-color: azure;
+}
+thead{
+    background-color: rgb(183, 226, 43);
+}
+table{
+    border: solid 3px rgb(47, 54, 49);
+    align-content: center;
+}
+div.block_patient{
+    border: 4px;
+    margin: auto;
+}
