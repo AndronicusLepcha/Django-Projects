@@ -12,8 +12,8 @@
         {%for patient in patient_list%}
         <tr>
             <td>{{patient.id}}</td>
-            <td>{{patient.lastName}}</td>
             <td>{{patient.firstName}}</td>
+            <td>{{patient.lastName}}</td>
             <td>{{patient.age}}</td>
             <td><a href="update/{{patient.id}}">Update</a></td>
             <td><a href="delete/{{patient.id}}">Delete</a></td>
