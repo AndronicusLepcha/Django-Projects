@@ -17,13 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from clinicals.views import PatientListView,PatientCreateView,PatientUpdateView,PatientDeleteView,addData, analyze
+from mergeMultipleExcel.views import mergeMultipleExcel,upload_file,upload_success
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', PatientListView.as_view(),name='index'),
+    path('addPatient', PatientListView.as_view(),name='index'),
     path('createPatient/', PatientCreateView.as_view()),
     path('update/<int:pk>/', PatientUpdateView.as_view()),
     path('delete/<int:pk>/', PatientDeleteView.as_view()),
     path('addData/<int:pk>/',addData),
     path('analyze/<int:pk>/',analyze),
+    path('mergeMultipleExcel/',mergeMultipleExcel,name='mergeMultipleExcel'),
+    path('upload_file/',upload_file,name='upload_file'),
+    path('upload_success/',upload_success,name='upload_success')
 ]

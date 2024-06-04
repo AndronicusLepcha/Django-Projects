@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Multiple Excel Files</title>
+</head>
+<body>
+    <h1>Upload Multiple Excel Files</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="files" multiple accept=".xlsx">
+        <button type="submit">Upload and Consolidate</button>
+    </form>
+</body>
+</html>
