@@ -6,11 +6,10 @@ from .models import UploadedFile
 class FileUploadForm(forms.ModelForm):
     class Meta:
         model = UploadedFile
-        fields = ['file']
+        fields = ['file','name']
 
     def clean_file(self):
         file = self.cleaned_data['file']
-        # Check if file size is less than 5MB
         if file.size > 5 * 1024 * 1024:
             raise forms.ValidationError("File size must be under 5MB.")
         return file
