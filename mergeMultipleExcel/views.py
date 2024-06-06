@@ -6,25 +6,36 @@ from openpyxl import Workbook,load_workbook
 from .forms import FileUploadForm
 from .models import UploadedFile
 from PyPDF2 import PdfMerger, PdfReader
+from django.core.cache import cache
 
 
 def mergeMultipleExcel(request):
-    all_data = UploadedFile.objects.all()
+    media_files_cache_key='media_files'
+    get_cache_data=cache.get(media_files_cache_key)
+    
+    if get_cache_data:
+            media_data=get_cache_data
+            print("This list data are from the cache memory")  
+    else:
+        
+        media_data = UploadedFile.objects.all()
+        cache.set(media_files_cache_key,media_data,timeout=100)
 
     if request.method == "POST":
         files = request.POST.getlist("selected_files")
+        if not files:
+            error_message = "No files selected. Please select at least one file."
+            return HttpResponse(error_message, status=400) 
         output_wb = Workbook()
         output_ws = output_wb.active 
-        output_merger = PdfMerger()
-
+        output_pdf = PdfMerger()
+        output_stream = BytesIO()
 
         for uploaded_file_id in files:
             uploaded_file = get_object_or_404(UploadedFile, pk=uploaded_file_id)
             file_path = uploaded_file.file.path
-
             try:
                 if file_path.endswith('.xlsx'):
-                    # Process Excel file
                     wb = load_workbook(file_path)
                     for sheet_name in wb.sheetnames:
                         sheet = wb[sheet_name]
@@ -32,7 +43,7 @@ def mergeMultipleExcel(request):
                             output_ws.append(row)
                     
                     output_stream = BytesIO()
-                    output_wb.save(output_stream)
+                    output_wb.save(output_stream) 
                     output_stream.seek(0)
         
                 elif file_path.endswith('.pdf'):
@@ -41,21 +52,16 @@ def mergeMultipleExcel(request):
                         page = pdf_reader.pages[page_num]
                         for line in page.extract_text().split('\n'):
                             output_ws.append([line])
-                    output_merger.append(file_path)
+                    output_pdf.append(file_path)
                     
                     output_stream = BytesIO()
-                    output_merger.write(output_stream)
+                    output_pdf.write(output_stream)
                     output_stream.seek(0)
                 else:
-                    # Handle unsupported file types
                     return HttpResponse("Error: Unsupported file format")
 
             except Exception as e:
                 return HttpResponse(f"Error: {e}")
-
-        # output_stream = BytesIO()
-        # output_wb.save(output_stream)
-        # output_stream.seek(0)
 
         content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' if any(file_path.endswith('.xlsx') for file_path in [uploaded_file.file.path for uploaded_file in UploadedFile.objects.filter(pk__in=files)]) else 'application/pdf'
         filename = 'merged.xlsx' if content_type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' else 'merged.pdf'
@@ -63,7 +69,7 @@ def mergeMultipleExcel(request):
         response['Content-Disposition'] = f'attachment; filename={filename}'
         return response 
 
-    return render(request, "mergeMultipleExcel/upload.html",{'data':all_data})
+    return render(request, "mergeMultipleExcel/upload.html",{'data':media_data})
 
 def upload_file(request):
     if request.method == 'POST':
