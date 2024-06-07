@@ -46,8 +46,6 @@ def mergeMultipleExcel(request):
                     wb = load_workbook(file_path)
                     for sheet_name in wb.sheetnames:
                         sheet = wb[sheet_name]
-                        # for row in sheet.iter_rows(values_only=True):
-                        #     output_ws.append(row)
                         for row_index, row in enumerate(sheet.iter_rows(values_only=True), start=1):
                             output_ws.append(row)
                             # Color the header row
@@ -59,6 +57,8 @@ def mergeMultipleExcel(request):
                     output_stream.seek(0)
         
                 elif file_path.endswith('.pdf'):
+                    output_wb = Workbook()
+                    output_ws = output_wb.active 
                     pdf_reader = PdfReader(file_path)
                     for page_num in range(len(pdf_reader.pages)):
                         page = pdf_reader.pages[page_num]
@@ -99,17 +99,40 @@ def mergeMultipleExcelInMultipleSheet(request):
         if not files:
             error_message = "No files selected. Please select at least one file."
             return HttpResponse(error_message, status=400) 
+        
         output_wb = Workbook()
         output_wb.remove(output_wb.active)
+        
         output_pdf = PdfMerger()
         output_stream = BytesIO()
+        
+        
+        # checking if user sends multiple files like xlsx and pdf at same time
+        file_count=0
+        xls_files=0
+        pdf_files=0
+            
+        for selectedfile_id in files:
+            selectedfile = get_object_or_404(UploadedFile, pk=selectedfile_id)
+            file_path = selectedfile.file.path
+            
+            file_count=file_count+1
+            if file_path.endswith('.xlsx'):
+                xls_files=xls_files+1
+            if file_path.endswith('.pdf'):
+                    pdf_files=pdf_files+1
+                    
+        print("total Files uploaded",file_count)
+        print("total xls Files found ",xls_files)
+        print("total pdf Files uploaded",pdf_files)
+
 
         for uploaded_file_id in files:
             uploaded_file = get_object_or_404(UploadedFile, pk=uploaded_file_id)
             print(uploaded_file.name)
             file_path = uploaded_file.file.path
             try:
-                if file_path.endswith('.xlsx'):
+                if file_count==xls_files:
                     
                     file_name_with_extension = os.path.basename(uploaded_file.file.name)
                     file_name_without_extension = os.path.splitext(file_name_with_extension)[0]
@@ -127,7 +150,9 @@ def mergeMultipleExcelInMultipleSheet(request):
                     output_wb.save(output_stream) 
                     output_stream.seek(0)
         
-                elif file_path.endswith('.pdf'):
+                elif file_count==pdf_files:
+                    output_wb = Workbook()
+                    output_ws = output_wb.active 
                     pdf_reader = PdfReader(file_path)
                     for page_num in range(len(pdf_reader.pages)):
                         page = pdf_reader.pages[page_num]
@@ -139,7 +164,7 @@ def mergeMultipleExcelInMultipleSheet(request):
                     output_pdf.write(output_stream)
                     output_stream.seek(0)
                 else:
-                    return HttpResponse("Error: Unsupported file format")
+                    return HttpResponse("Error: Files are of multiple format!.")
 
             except Exception as e:
                 return HttpResponse(f"Error: {e}")
