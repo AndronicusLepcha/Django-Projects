@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from clinicals.views import PatientListView,PatientCreateView,PatientUpdateView,PatientDeleteView,addData, analyze
-from mergeMultipleExcel.views import mergeMultipleExcel,upload_file,upload_success
+from mergeMultipleExcel.views import mergeMultipleExcel,upload_file,upload_success,mergeMultipleExcelInMultipleSheet,multipleProcedureMultipleSheet
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +28,8 @@ urlpatterns = [
     path('addData/<int:pk>/',addData),
     path('analyze/<int:pk>/',analyze),
     path('mergeMultipleExcel/',mergeMultipleExcel,name='mergeMultipleExcel'),
+    path('mergeMultipleExcelInMultipleSheet/',mergeMultipleExcelInMultipleSheet,name='mergeMultipleExcelInMultipleSheet'),
+    path('multipleProcedureMultipleSheet/',multipleProcedureMultipleSheet,name='multipleProcedureMultipleSheet'),
     path('upload_file/',upload_file,name='upload_file'),
     path('upload_success/',upload_success,name='upload_success')
 ]
