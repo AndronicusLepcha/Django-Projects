@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multiple Json Data and Multiple Excel Sheets</title>
+</head>
+<body>
+    <h1>Upload and Merge  Multiple Excel or PDF Files</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% if all_json_data %}
+            {% for json_data in all_json_data %}
+            <h2>JSON Data Set</h2>
+            <ul>
+            {% for emp in json_data %}
+                <li>
+                    <strong>Name:</strong> {{ emp.name }}<br>
+                    <strong>employeeId:</strong> {{ emp.employeeId }}<br>
+                    <strong>EmployeeType:</strong> {{ emp.EmployeeType }}<br>
+                </li>
+            {% endfor %}
+            </ul>
+             {% endfor %}
+        {% else %} <br>
+        <p>No Files are uploaded!. </p>
+        {% endif %}
+        <br><br>
+        <!-- <input type="file" name="files" multiple accept=".xlsx"> -->
+        <button type="submit">Merge Files</button>
+    </form>
+</body>
+</html>
