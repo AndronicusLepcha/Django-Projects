@@ -194,6 +194,7 @@ def multipleProcedureMultipleSheet(request):
                     {"name":"Kamuna","contactNo":54532666,"employeeId":98765,"EmployeeType":"IT Manager"}]
     
     all_json_data = [procedureData1, procedureData2]
+    print(all_json_data)
     if request.method == "POST":
         for index, json_data in enumerate(all_json_data, start=1):
             sheet = wb.create_sheet(title=f"Sheet {index}")
