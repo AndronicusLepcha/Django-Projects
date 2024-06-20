@@ -1,15 +1,18 @@
 # Create your views here.
 from io import BytesIO
 import io
+import json
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse
 from openpyxl import Workbook,load_workbook
+from redis import Redis
 from .forms import FileUploadForm
 from .models import UploadedFile
 from PyPDF2 import PdfMerger, PdfReader
 from django.core.cache import cache
 from openpyxl.styles import PatternFill
 import os
+from django.core.serializers.json import DjangoJSONEncoder
 
 def color_header(sheet,color):
     header_row = sheet[1] 
@@ -82,16 +85,19 @@ def mergeMultipleExcel(request):
         return response 
     
 def mergeMultipleExcelInMultipleSheet(request):
-    media_files_cache_key='media_files'
-    get_cache_data=cache.get(media_files_cache_key)
+    # redis_connection = get_redis_connection("default")
+    redis_connection = Redis(host='redis', port=6379, db=1) # 0-15 db number        
+    # media_files_cache_key='media_files'
+    media_files_cache_key = 'media_data'
+    get_redis_data=redis_connection.get(media_files_cache_key)
     
-    if get_cache_data:
-            media_data=get_cache_data
-            print("This list data are being fetched from the cache memory")  
+    if get_redis_data:
+            media_data = json.loads(get_redis_data.decode('utf-8'))
+            print("This data is being fetched from the redis-cache memory")
     else:
-        
-        media_data = UploadedFile.objects.all()
-        cache.set(media_files_cache_key,media_data,timeout=100)
+        media_data = list(UploadedFile.objects.all().values())
+        redis_connection.set(media_files_cache_key, json.dumps(media_data))
+        print("Redis cache key is ",redis_connection.keys('*'))
 
     if request.method == "POST":
         files = request.POST.getlist("selected_files")
@@ -105,7 +111,6 @@ def mergeMultipleExcelInMultipleSheet(request):
         
         output_pdf = PdfMerger()
         output_stream = BytesIO()
-        
         
         # checking if user sends multiple files like xlsx and pdf at same time
         file_count=0
@@ -224,11 +229,29 @@ def upload_file(request):
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            uploaded_data=form.save()
+            update_redis_data(uploaded_data)
             return redirect('upload_success')
     else:
         form = FileUploadForm()
     return render(request, 'upload_form.html', {'form': form})
+
+def update_redis_data(uploaded_data):
+    # media_files_cache_key = 'media_files'
+    media_files_cache_key = 'media_data'
+    redis_connection = Redis(host='redis', port=6379, db=1)
+    # redis_connection.delete(media_files_cache_key)   #use this to delete the redis-data
+    if redis_connection.exists(media_files_cache_key):
+        existing_data = redis_connection.get(media_files_cache_key)
+        load_redis_data=json.loads(existing_data)
+        load_redis_data.append({
+                'id': uploaded_data.id,
+                'name':uploaded_data.name,
+                'file': uploaded_data.file.name
+            })
+        updated_redis_data=json.dumps(load_redis_data)
+        redis_connection.set(media_files_cache_key, updated_redis_data)
+    print("Redis data updated successfully")
 
 def upload_success(request):
     return render(request, 'upload_success.html')
