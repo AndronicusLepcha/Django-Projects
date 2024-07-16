@@ -17,8 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from clinicals.views import PatientListView,PatientCreateView,PatientUpdateView,PatientDeleteView,addData, analyze
-from mergeMultipleExcel.views import mergeMultipleExcel,upload_file,upload_success,mergeMultipleExcelInMultipleSheet,multipleProcedureMultipleSheet
-
+from mergeMultipleExcel.views import RedisDeleteView, RedisUpdateView, mergeMultipleExcel,upload_file,upload_success,mergeMultipleExcelInMultipleSheet,multipleProcedureMultipleSheet,get_no_files,getIsPublic,delete_success
+from createExcel.generateExcel import create_transaction_excel_report
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('addPatient', PatientListView.as_view(),name='index'),
@@ -31,5 +31,12 @@ urlpatterns = [
     path('mergeMultipleExcelInMultipleSheet/',mergeMultipleExcelInMultipleSheet,name='mergeMultipleExcelInMultipleSheet'),
     path('multipleProcedureMultipleSheet/',multipleProcedureMultipleSheet,name='multipleProcedureMultipleSheet'),
     path('upload_file/',upload_file,name='upload_file'),
-    path('upload_success/',upload_success,name='upload_success')
+    path('get_no_files/',get_no_files,name='get_no_files'),
+    path('upload_success/',upload_success,name='upload_success'),
+    path('sqwb-query-generate-excel/',create_transaction_excel_report,name='create_transaction_excel_report'),
+    path('getIsPublic/',getIsPublic,name='getIsPublic'),
+    path('updateTest/<int:pk>/', RedisUpdateView.as_view(), name='updateTest'),
+    path('deleteData/<int:pk>/', RedisDeleteView.as_view(),name='deleteData'),
+    path('delete_success/',delete_success,name='delete_success'),
+    
 ]
