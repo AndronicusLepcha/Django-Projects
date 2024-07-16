@@ -8,16 +8,42 @@
     <a href="/upload_file">Upload the Files </a><br> <br>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {% if data %}
-            {% for item in data %}
-            <input type="checkbox" name="selected_files" value="{{ item.id }}">{{item.name}} <br>
+        {% if ui_data %}
+            <p>current Page  {{ pages.number}}</p>
+            <input type="hidden" name="page_number" value="{{ pages.number }}">
+            {% for item in ui_data %}
+                <input type="checkbox" name="selected_files" value="{{ item.id }}" {% if item.is_selected %}checked{% endif %}>
+                <h3>File Name: {{ item.file_name }}</h3> <h3>Description: {{ item.description }}</h3><button type="submit" name="update" value="{{ item.id }}">Update</button> <button type="submit" name="delete" value="{{ item.id }}">Delete</button>  
+                <br>
             {% endfor %}
         {% else %} <br>
-        <p>No Files are uploaded!. </p>
+            <p>No Files are uploaded!. </p>
         {% endif %}
+        {% if redis_data_length %}
+        <p>Total Files Count: {{ redis_data_length }}</p><br>
+         <p>Total Files Count: {{ data|length }}</p>
+        {% endif %} 
         <br><br>
         <!-- <input type="file" name="files" multiple accept=".xlsx"> -->
-        <button type="submit">Merge Files</button>
+        <button type="submit" name="merge">Merge Files</button>
     </form>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if pages.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ pages.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ pages.number }} of {{ pages.paginator.num_pages }}.
+            </span>
+
+            {% if pages.has_next %}
+                <a href="?page={{ pages.next_page_number }}">Next{{ pages.next_page_number }}</a>
+                <a href="?page={{ pages.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
 </body>
 </html>
