@@ -82,39 +82,12 @@ WSGI_APPLICATION = 'Clinical_Data_Reporting_Project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# 'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME':'sqwb',
-#         'HOST':'localhost',
-#         'PORT':'3306',
-#         'USER':'root',
-#         'PASSWORD': 'Root@123',
-#     },
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    },
-    'sqwb-db': {
-                'ENGINE': 'django.db.backends.postgresql_psycopg2',
-                'NAME': 'marginanalysis_dev',
-                'USER': 'marginanalysis_dev',
-                'PASSWORD': '5l7Bj$UZqYiLF25%8Iug',
-                'HOST': 'mci-dev-db-postgres.crkw9lmhqeqa.us-west-2.rds.amazonaws.com',
-                'PORT': '5432'
-            }
+    }
 }
-# DATABASES = {
-#         'default': {
-#                 'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#                 'NAME': 'marginanalysis_dev',
-#                 'USER': 'marginanalysis_dev',
-#                 'PASSWORD': '5l7Bj$UZqYiLF25%8Iug',
-#                 'HOST': 'mci-dev-db-postgres.crkw9lmhqeqa.us-west-2.rds.amazonaws.com',
-#                 'PORT': '5432'
-#             }
-# }
 
 CACHES = {
     "default": {
