@@ -1,6 +1,4 @@
-# My Docker App
-
-This project demonstrates how to set up and run a Docker container using Docker and Docker Compose.
+# Project Setup
 
 ## Prerequisites
 
