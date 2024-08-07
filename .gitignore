@@ -1,0 +1,36 @@
+# Python Bytecode
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+# Virtual Environment
+venv/
+.env/
+
+# Django Secret Key and Local Settings
+*.env
+*.local
+
+# Django Migrations
+*/migrations/
+!*/migrations/__init__.py
+
+# Static Files
+/static/
+
+# Media Files
+/media/
+
+# Database Files
+db.sqlite3
+
+# Logs
+*.log
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# System Files

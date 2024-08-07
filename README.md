@@ -1,32 +1,19 @@
-# Clinical Data Report Project
+# My Docker App
 
-## Description
+This project demonstrates how to set up and run a Docker container using Docker and Docker Compose.
 
-The Clinical Data Report Project is a Django-based application designed to help manage and maintain clinical data efficiently.
+## Prerequisites
 
-## Setup
+- Docker: [Install Docker](https://docs.docker.com/get-docker/)
 
-Follow these steps to set up and run the project:
+## Getting Started
+
+Follow these steps to build and run the Docker container:
+
+### 1. Build the Docker Image
+
+In your terminal, navigate to the project directory containing the `Dockerfile` and `docker-compose.yml` files. Then, run the following command to build the Docker image:
 
 ```bash
-git clone https://github.com/AndronicusLepcha/Clinical-Data-Report-Project.git
-cd Clinical-Data-Report-Project
-
-python -m venv venv
-
-# On Windows:
-.\venv\Scripts\activate
-
-# On macOS/Linux:
-source venv/bin/activate
-
-pip install -r requirements.txt
-
-python manage.py migrate
-
-# Optional: Create superuser
-python manage.py createsuperuser
-
-python manage.py runserver
-
---- GOOD TO GO ---
+docker-compose build
+docker-compose up
