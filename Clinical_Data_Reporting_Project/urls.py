@@ -15,18 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from clinicals.views import PatientListView,PatientCreateView,PatientUpdateView,PatientDeleteView,addData, analyze
+from django.urls import include, path
+import clinicals
 from mergeMultipleExcel.views import RedisDeleteView, RedisUpdateView, mergeMultipleExcel,upload_file,upload_success,mergeMultipleExcelInMultipleSheet,multipleProcedureMultipleSheet,get_no_files,getIsPublic,delete_success
 from createExcel.generateExcel import create_transaction_excel_report
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('addPatient', PatientListView.as_view(),name='index'),
-    path('createPatient/', PatientCreateView.as_view()),
-    path('update/<int:pk>/', PatientUpdateView.as_view()),
-    path('delete/<int:pk>/', PatientDeleteView.as_view()),
-    path('addData/<int:pk>/',addData),
-    path('analyze/<int:pk>/',analyze),
+    path('clinicals/', include('clinicals.urls')),
     path('mergeMultipleExcel/',mergeMultipleExcel,name='mergeMultipleExcel'),
     path('mergeMultipleExcelInMultipleSheet/',mergeMultipleExcelInMultipleSheet,name='mergeMultipleExcelInMultipleSheet'),
     path('multipleProcedureMultipleSheet/',multipleProcedureMultipleSheet,name='multipleProcedureMultipleSheet'),
